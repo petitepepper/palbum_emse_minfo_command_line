@@ -57,7 +57,7 @@ To go into the gory details, the  **index.html**  file found in the years direct
 The overall structure of the album  should resemble the following ex- ample where **OUTPUT-DIRECTORY** is **my_album**. 
 
 ```
-y_album
+my_album
 ├── 2011
 │   ├── 2011_08_02
 │   │   ├── 2011_08_02-img_6704.jpg
