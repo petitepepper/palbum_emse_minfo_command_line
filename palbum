@@ -1,0 +1,101 @@
+#!/bin/bash
+
+INPUTDIRECTORY="$1"
+OUTPUTDIRECTORY="$2"
+
+
+directoryByCreateTime(){
+	exiftool -o . '-Directory<CreateDate' -d ./${OUTPUTDIRECTORY}/%Y/%Y_%m_%d -r ${INPUTDIRECTORY}
+}
+
+
+addPrefixToFilename(){
+	exiftool '-filename<${CreateDate}-${filename}' -d %Y_%m_%d -r ${OUTPUTDIRECTORY}
+}
+
+
+createThumbnails(){
+	dateDirs=$(find $OUTPUTDIRECTORY -depth -type d -links 2)
+	for dir in $dateDirs;do
+		new_path=$dir/.thumbs
+		mkdir $new_path
+		for image in "$dir"/*;do
+			filename=$(echo $image|rev| cut -d"/" -f1|rev)
+			img_name=$(echo $filename|cut -d"." -f1)
+			img_ext=$(echo $filename|rev| cut -d"." -f1|rev)
+			new_name=$img_name-thumb.$img_ext
+			convert $image -resize 'x150' $new_path/$new_name	
+		done 
+	done	
+}
+
+createHTML(){
+        file=$OUTPUTDIRECTORY/index.html
+        filestart="
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <title>Palbum</title>
+        </head>
+
+        <body>
+        <h1>Album Overview</h1>
+        <a href='./'>$OUTPUTDIRECTORY</a><br>
+        "
+        echo $filestart > $file
+
+
+        year_dirs=$(ls -d ./$OUTPUTDIRECTORY/*/)
+        for year_dir in $year_dirs;do
+                #`year_dir` in form of ./output_dir/2011/
+
+                # delect OUTPUTDIRECTORY in the path
+                year_dir_from_html=$(echo $year_dir|sed "s/\/$OUTPUTDIRECTORY//g")
+
+                #obtain the year
+                year=$(echo $year_dir|rev|cut -d"/" -f2|rev)
+
+                # calculate number of photos in this year
+                n_img=$(find $year_dir -type f |wc -l)
+                ((n_img=n_img/2))
+
+                #add YEAR tag(click to see details)
+                echo "<details> <summary><a href='$year_dir_from_html'>$year</a>: $n_img photos</summary>" >> $file
+
+                #add YYYY_MM_DD tag link
+                date_dirs=$(ls -d $year_dir*/)
+                for date_dir in $date_dirs; do
+                        #`date_dir` in form of './output_dir/2011/2011_08_02/'
+
+                        # delete OUTPUTDIRECTORY in the path
+                        date_dir_from_html=$(echo $date_dir|sed "s/\/$OUTPUTDIRECTORY//g")
+
+                        date=$(echo $date_dir|rev|cut -d"/" -f2|rev)
+                        echo "<p><a href='$date_dir_from_html'> $date </a></p>" >> $file
+
+                        photos=$(ls $date_dir)
+                        for photo in $photos; do
+                                p_name=$(echo $photo|cut -d"." -f1)
+                                p_ext=$(echo $photo|cut -d"." -f2)
+                                photo_path=$date_dir_from_html$photo
+                                thumbnail_path=$date_dir_from_html.thumbs/$p_name-thumb.$p_ext
+                                echo "<a href='$photo_path'><img src='$thumbnail_path'/></a>" >> $file
+                        done
+                done
+
+                echo "</details>" >> $file
+        done
+
+	fileend="
+        </body>
+        </html>
+        "
+        echo $fileend >> $file
+}
+
+
+
+directoryByCreateTime
+addPrefixToFilename
+createThumbnails
+createHTML
