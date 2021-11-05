@@ -8,7 +8,7 @@
 
 ## **SYNOPSIS** 
 
-palbum /<INPUT-DIRECTORY/> /<OUTPUT-DIRECTORY/> 
+palbum [INPUT-DIRECTORY] [OUTPUT-DIRECTORY] 
 
 For example:
 
