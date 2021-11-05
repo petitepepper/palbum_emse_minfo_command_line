@@ -8,15 +8,32 @@
 
 ## **SYNOPSIS** 
 
-palbum <INPUT-DIRECTORY> <OUTPUT-DIRECTORY> 
+palbum /<INPUT-DIRECTORY/> /<OUTPUT-DIRECTORY/> 
 
 For example:
 
 ```shell
 ./palbum photos my_album
 ```
+You will receive informations as follows once the album is created successfully :
+```
+[INFO]Creating directories...
+    1 directories scanned
+    8 directories created
+   89 image files copied
+      Directories created successfully!
+[INFO]Modifying photo names...
+   13 directories scanned
+   89 image files updated
+      Photo names modified successfully!
+[INFO]Creating thumbnails...
+      Thumbnails created successfully!
+[INFO]Creating HTML page...
+      HTML page created successfully!
+[INFO]Your album is already! Please check the 'index.html' in your output directory.
+```
 
-
+Note that, you may need to make the script executable before using it. You can use the command `chmod +x palbum` to do that.
 
 
 
