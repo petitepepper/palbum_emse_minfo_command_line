@@ -111,4 +111,4 @@ echo "      Thumbnails created successfully!"
 echo "[INFO]Creating HTML page..."
 createHTML
 echo "      HTML page created successfully!"
-echo "[INFO]Your album is already! Please check the 'index.html' in your output directory."
+echo "[INFO]Your album is ready! Please check the 'index.html' in your output directory."
