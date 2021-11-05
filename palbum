@@ -3,7 +3,6 @@
 INPUTDIRECTORY="$1"
 OUTPUTDIRECTORY="$2"
 
-
 directoryByCreateTime(){
 	exiftool -o . '-Directory<CreateDate' -d ./${OUTPUTDIRECTORY}/%Y/%Y_%m_%d -r ${INPUTDIRECTORY}
 }
@@ -94,8 +93,22 @@ createHTML(){
 }
 
 
+if [ $# != 2 ] ; then
+	echo "[ERROR] Please specify the input directory and output directory"
+	echo "        EXAMPLE: ./palbum photos my_album"
+	exit 1
+fi
 
+echo "[INFO]Creating directories..."
 directoryByCreateTime
+echo "      Directories created successfully!"
+echo "[INFO]Modifying photo names..."
 addPrefixToFilename
+echo "      Photo names modified successfully!"
+echo "[INFO]Creating thumbnails..."
 createThumbnails
+echo "      Thumbnails created successfully!"
+echo "[INFO]Creating HTML page..."
 createHTML
+echo "      HTML page created successfully!"
+echo "[INFO]Your album is already! Please check the 'index.html' in your output directory."
